@@ -1,419 +1,254 @@
-# 📐 Linear System Solver – Direct & Iterative Methods (C++)
+# 📐 Linear System Solver – Direct & Iterative Numerical Methods (C++)
 
-> Comparative implementation of classical methods for solving linear systems  
-> Includes matrix property validation (symmetry & positive definiteness)
-
----
-
-## 📌 Overview
-
-This project implements and compares **direct and iterative numerical methods** for solving a linear system:
+A C++ implementation of classical numerical methods for solving linear systems of equations:
 
 \[
 Ax = b
 \]
 
-Where:
-- \( A \) is a 4×4 matrix
-- \( b \) is a 4×1 vector
-- \( x \) is the solution vector
-
-The program:
-
-✔ Verifies matrix symmetry  
-✔ Verifies positive definiteness (Sylvester criterion)  
-✔ Solves the system using:
-- Gaussian Elimination (direct method)
-- Jacobi Method (iterative)
-- Gauss–Seidel Method (iterative)
+This project compares **direct** and **iterative** approaches while verifying important matrix properties such as symmetry and positive definiteness.
 
 ---
 
-## 🧮 Matrix Used
+## 📌 Project Overview
 
-```text
+The program:
+
+- ✔ Checks if the matrix is **symmetric**
+- ✔ Checks if the matrix is **positive definite** (Sylvester criterion)
+- ✔ Solves the system using:
+  - Gaussian Elimination (Direct Method)
+  - Jacobi Method (Iterative)
+  - Gauss–Seidel Method (Iterative)
+- ✔ Displays number of iterations
+- ✔ Uses numerical tolerance stopping criteria
+
+This project focuses on **algorithm comparison, convergence behavior, and numerical stability**.
+
+---
+
+## 🧮 System Used
+
+Matrix:
+
+
 A =
-[ 23.6   1.5  -0.9  -0.8 ]
-[  1.5  14.6   0.7   0.2 ]
-[ -0.9   0.7  11.3  -0.6 ]
-[ -0.8   0.2  -0.6   9.9 ]
+[ 23.6 1.5 -0.9 -0.8 ]
+[ 1.5 14.6 0.7 0.2 ]
+[ -0.9 0.7 11.3 -0.6 ]
+[ -0.8 0.2 -0.6 9.9 ]
+
+
+Vector:
+
 
 b = [-1.2, 0.9, 4.7, -1.2]
-🔍 Matrix Validation
-1️⃣ Symmetry Check
+
+
+Initial guess for iterative methods:
+
+
+x₀ = [0, 0, 0, 0]
+
+
+Tolerance:
+
+
+ε = 10⁻³
+
+
+---
+
+# 🔍 Matrix Validation
+
+## 1️⃣ Symmetry Check
 
 The matrix is symmetric if:
 
-𝐴
-𝑖
-𝑗
-=
-𝐴
-𝑗
-𝑖
-A
-ij
-	​
 
-=A
-ji
-	​
+A[i][j] = A[j][i]
 
 
-This property is important because:
+Symmetric matrices:
+- Have real eigenvalues
+- Provide better numerical stability
+- Help ensure convergence of iterative methods
 
-Symmetric matrices have real eigenvalues
+---
 
-If also positive definite → guaranteed convergence for iterative methods
+## 2️⃣ Positive Definiteness
 
-2️⃣ Positive Definiteness
-
-Verified using Sylvester’s Criterion:
+Verified using **Sylvester’s Criterion**.
 
 A matrix is positive definite if all leading principal minors are positive:
 
-det
-⁡
-(
-𝐴
-1
-)
->
-0
-det(A
-1
-	​
+- det(A₁) > 0
+- det(A₂) > 0
+- det(A₃) > 0
+- det(A₄) > 0
 
-)>0
-det
-⁡
-(
-𝐴
-2
-)
->
-0
-det(A
-2
-	​
+If positive definite:
+- ✔ The system has a unique solution
+- ✔ Gauss–Seidel is guaranteed to converge
+- ✔ Numerical stability improves
 
-)>0
-det
-⁡
-(
-𝐴
-3
-)
->
-0
-det(A
-3
-	​
+---
 
-)>0
-det
-⁡
-(
-𝐴
-4
-)
->
-0
-det(A
-4
-	​
+# ⚙️ Implemented Methods
 
-)>0
+---
 
-This guarantees:
+## 🔹 1. Gaussian Elimination (Direct Method)
 
-✔ Unique solution
-✔ Convergence of Gauss–Seidel
-✔ Stability of the system
+Steps:
+- Partial pivoting
+- Forward elimination
+- Back substitution
 
-⚙️ Implemented Methods
-1️⃣ Gaussian Elimination (Direct Method)
+### Time Complexity
 
-Uses partial pivoting
+O(n³)
 
-Forward elimination + back substitution
 
-Deterministic algorithm
+### Characteristics
 
-Time Complexity:
-𝑂
-(
-𝑛
-3
-)
-O(n
-3
-)
+✔ Deterministic  
+✔ Exact solution (floating-point precision)  
+✔ No convergence condition required  
+❌ Less efficient for very large systems  
 
-For n = 4 → negligible cost, but scales cubically.
+---
 
-Characteristics:
-
-✔ Exact solution (within floating-point precision)
-✔ No convergence issues
-❌ More computationally expensive for large systems
-
-2️⃣ Jacobi Method (Iterative)
+## 🔹 2. Jacobi Method
 
 Update formula:
 
-𝑥
-𝑖
-(
-𝑘
-+
-1
-)
-=
-1
-𝑎
-𝑖
-𝑖
-(
-𝑏
-𝑖
-−
-∑
-𝑗
-≠
-𝑖
-𝑎
-𝑖
-𝑗
-𝑥
-𝑗
-(
-𝑘
-)
-)
-x
-i
-(k+1)
-	​
 
-=
-a
-ii
-	​
+x_i^(k+1) = (1 / a_ii) * ( b_i - Σ a_ij x_j^(k) )
 
-1
-	​
 
-	​
-
-b
-i
-	​
-
-−
-j
-
-=i
-∑
-	​
-
-a
-ij
-	​
-
-x
-j
-(k)
-	​
-
-	​
-
-Convergence Condition
+### Convergence Condition
 
 Jacobi converges if:
+- Matrix is strictly diagonally dominant, OR
+- Matrix is symmetric positive definite
 
-Matrix is strictly diagonally dominant, OR
-
-Matrix is symmetric positive definite
-
-Order of Convergence:
-
+### Convergence Order
 Linear
 
-Time Complexity per iteration:
-𝑂
-(
-𝑛
-2
-)
-O(n
-2
-)
+### Time Complexity
+Per iteration:
 
-Total cost:
+O(n²)
 
-𝑂
-(
-𝑛
-2
-⋅
-𝑘
-)
-O(n
-2
-⋅k)
 
-Where:
+Total:
 
-n = system size
+O(n² · k)
 
-k = number of iterations
 
-✔ Easy to parallelize
-❌ Slower convergence than Gauss–Seidel
+Where k = number of iterations
 
-3️⃣ Gauss–Seidel Method (Iterative)
+### Characteristics
+
+✔ Easy to implement  
+✔ Parallelizable  
+❌ Slower convergence than Gauss–Seidel  
+
+---
+
+## 🔹 3. Gauss–Seidel Method
 
 Update formula:
 
-𝑥
-𝑖
-(
-𝑘
-+
-1
-)
-=
-1
-𝑎
-𝑖
-𝑖
-(
-𝑏
-𝑖
-−
-∑
-𝑗
-<
-𝑖
-𝑎
-𝑖
-𝑗
-𝑥
-𝑗
-(
-𝑘
-+
-1
-)
-−
-∑
-𝑗
->
-𝑖
-𝑎
-𝑖
-𝑗
-𝑥
-𝑗
-(
-𝑘
-)
-)
-x
-i
-(k+1)
-	​
 
-=
-a
-ii
-	​
+x_i^(k+1) = (1 / a_ii) * ( b_i - Σ(a_ij x_j^(updated)) )
 
-1
-	​
-
-(b
-i
-	​
-
-−
-j<i
-∑
-	​
-
-a
-ij
-	​
-
-x
-j
-(k+1)
-	​
-
-−
-j>i
-∑
-	​
-
-a
-ij
-	​
-
-x
-j
-(k)
-	​
-
-)
 
 Uses updated values immediately.
 
-Convergence:
+### Convergence
 
 For symmetric positive definite matrices:
 ✔ Guaranteed convergence
 
-Order of Convergence:
-
+### Convergence Order
 Linear (but typically faster than Jacobi)
 
-Time Complexity:
-𝑂
-(
-𝑛
-2
-⋅
-𝑘
-)
-O(n
-2
-⋅k)
+### Time Complexity
 
-✔ Faster practical convergence
-✔ More stable than Jacobi
-❌ Sequential nature (harder to parallelize)
+O(n² · k)
 
-📊 Convergence Comparison
-Method	Type	Convergence	Stability	Speed
-Gaussian	Direct	Deterministic	High	Fast (small n)
-Jacobi	Iterative	Linear	Medium	Moderate
-Gauss–Seidel	Iterative	Linear (faster)	High	Faster than Jacobi
+
+### Characteristics
+
+✔ Faster practical convergence  
+✔ More stable than Jacobi  
+❌ Sequential (not easily parallelizable)
+
+---
+
+# 📊 Convergence Comparison
+
+| Method          | Type      | Convergence | Stability | Speed |
+|---------------|----------|------------|----------|-------|
+| Gaussian       | Direct   | Deterministic | High | Fast (small n) |
+| Jacobi         | Iterative | Linear | Medium | Moderate |
+| Gauss–Seidel   | Iterative | Linear (faster) | High | Faster |
 
 Expected behavior for this matrix:
 
-Gaussian → immediate exact solution
+- Gaussian → immediate solution
+- Jacobi → moderate number of iterations
+- Gauss–Seidel → fewer iterations than Jacobi
 
-Jacobi → converges in moderate iterations
+---
 
-Gauss–Seidel → converges in fewer iterations than Jacobi
+# 🧠 Numerical Stability
 
-🧠 Numerical Stability Considerations
+The implementation includes:
 
-✔ Partial pivoting in Gaussian elimination
-✔ Positive definiteness ensures convergence
-✔ Error-based stopping criterion (epsilon = 1e-3)
-✔ Iteration counter tracking
+- Partial pivoting
+- Determinant-based positive definiteness validation
+- Error-based stopping condition
+- Iteration counter tracking
+
+Stopping condition:
 
 
-[lab 2 CHiochiu.docx](https://github.com/user-attachments/files/25716851/lab.2.CHiochiu.docx)
+max |x_new - x_old| < ε
+
+
+---
+
+# ⏱ Computational Complexity Summary
+
+| Method        | Complexity |
+|--------------|------------|
+| Gaussian     | O(n³) |
+| Jacobi       | O(n² · k) |
+| Gauss–Seidel | O(n² · k) |
+
+Where:
+- n = system size
+- k = number of iterations
+
+For small systems (n = 4), Gaussian is extremely fast.  
+For large systems, iterative methods become more practical.
+
+---
+
+# 🖥 Compilation & Execution
+
+### Linux / macOS
+```bash
+
+g++ -std=c++11 -O2 main.cpp -o linear_solver
+./linear_solver
+Windows (MinGW)
+g++ -std=c++11 -O2 main.cpp -o linear_solver.exe
+linear_solver.exe
+
+
+[lab 2 CHiochiu.docx](https://github.com/user-attachments/files/25716897/lab.2.CHiochiu.docx)
+
