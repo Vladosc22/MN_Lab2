@@ -238,17 +238,5 @@ For large systems, iterative methods become more practical.
 
 ---
 
-# 🖥 Compilation & Execution
-
-### Linux / macOS
-```bash
-
-g++ -std=c++11 -O2 main.cpp -o linear_solver
-./linear_solver
-Windows (MinGW)
-g++ -std=c++11 -O2 main.cpp -o linear_solver.exe
-linear_solver.exe
-
-
 [lab 2 CHiochiu.docx](https://github.com/user-attachments/files/25716897/lab.2.CHiochiu.docx)
 
